@@ -12,7 +12,7 @@ process.on('SIGINT', () => {
 });
 
 resourceInit(app);
-app.use('/', express.static('src/static'));
+app.use('/', express.static('static'));
 
 const server = app.listen(port, () => {
     console.log(`Listening at on port ${port}`)

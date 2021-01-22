@@ -1,128 +1,139 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+        <link href="main.css" rel="stylesheet">
         <style>
+            body {
+                padding: 0;
+                margin: 0;
+                width: 100%;
+                height: 100%;
+                background-color: skyblue;
+            }
             #picture {
                 width: 640px;
                 height: 480px;
                 border: 1px solid black;
             }
+
+            div.door-button {
+                margin-right: 10px;
+            }
+
+            div.container {
+                margin-top: 10px;
+            }
         </style>
-        <script type="text/javascript">
-            let socket = null;
-            let canvas = null;
-            let context = null;
-            let status = null;
+        <script src="https://unpkg.com/vue@3.0.5/dist/vue.global.js"></script>
+        <script type="module">
+            import CamreaStreamComponent from './camera-stream.js';
+            import DoorButtonComponent from './door-button.js';
 
-            function onload() {
-                canvas = document.getElementById("picture");
-                context = canvas.getContext("2d");
-                canvas.width = 640;
-                canvas.height = 480;
-                status = document.getElementById("status");
-            }
+            let app = Vue.createApp({});
+            CamreaStreamComponent(app);
+            DoorButtonComponent(app);
+
+            app.mount("#app");
             
-            function connect() {
-                socket = new WebSocket("ws://192.168.0.161:3000/api/v1/camera/stream");
-                status.innerText = "connecting";
+            // let socket = null;
+            // let canvas = null;
+            // let context = null;
+            // let status = null;
 
-                socket.onopen = function() {
-                    running = true;
-                    status.innerText = "connected";
-                    socket.send("Give Me Something");
-                }
+            // function onload() {
+            //     canvas = document.getElementById("picture");
+            //     context = canvas.getContext("2d");
+            //     canvas.width = 640;
+            //     canvas.height = 480;
+            //     status = document.getElementById("status");
+            // }
+            
+            
+
+            // function disconnect() {
+            //     socket.close();
+            //     delete socket;
+            // }
+
+            // let img1 = new Image();
+            // let stream = false;
+
+            // img1.onload = () => {
+            //     canvas.width = img1.width;
+            //     canvas.height = img1.height;
+            //     context.drawImage(img1, 0, 0);
+
+            //     if (running) { 
+            //         socket.send("base64");
+            //     }
+            //     if (stream) {
+            //         picture();
+            //     }
+            // };
+
+            // function start() { stream = true; picture(); }
+            // function stop() { stream = false; }
+
+            // function picture() {
+            //     //socket.send();
+
+            //     // fetch("/pictureB64")
+            //     //     .then(response => response.text())
+            //     //     .then(b64string => {
+            //     //         img1.src = b64string;
+            //     //     });
                 
-                socket.onmessage = function(event) {
-                    if (event.data === "started") {
-                        socket.send("base64");
-                    } else if (event.data.indexOf("data:image") > -1) {
-                        // let src = "data:image/jpeg;base64,";
-                        // let reader = event.data.stream().getReader();
-                        // let pump = () => reader.read().then(({done, value}) => {
-                        //     if (done) {
-                        //         img1.src = src;
-                        //         return;
-                        //     }
+            //     img1.src = "/api/v1/camera/picture?_" + Date.now();
 
-                        //     src += btoa(value);
-                        //     return pump();
-                        // });
+            //     // fetch("/picture")
+            //     //     .then(response => response.json())
+            //     //     .then((pixelData) => {
+            //     //         let imgData = new ImageData(new Uint8ClampedArray(pixelData), 640, 480);
+            //     //         context.putImageData(imgData, 0, 0);
+            //     //     });
+            // }
 
-                        // pump();
-                        img1.src = event.data;
-                        //let imgData = new ImageData(new Uint8ClampedArray(event.data.stream()), 640, 480);
-                        //context.putImageData(imgData, 0, 0);
-                        //console.log("Received Image");                        
-                    }
-                };
-
-                socket.onclose = function(event) {
-                    status.innerText = "disconnected";
-                    running = false;
-                    delete socket;
-                };
-            }
-
-            function disconnect() {
-                socket.close();
-                delete socket;
-            }
-
-            let img1 = new Image();
-            let stream = false;
-
-            img1.onload = () => {
-                canvas.width = img1.width;
-                canvas.height = img1.height;
-                context.drawImage(img1, 0, 0);
-
-                if (running) { 
-                    socket.send("base64");
-                }
-                if (stream) {
-                    picture();
-                }
-            };
-
-            function start() { stream = true; picture(); }
-            function stop() { stream = false; }
-
-            function picture() {
-                //socket.send();
-
-                // fetch("/pictureB64")
-                //     .then(response => response.text())
-                //     .then(b64string => {
-                //         img1.src = b64string;
-                //     });
-                
-                img1.src = "/api/v1/camera/picture?_" + Date.now();
-
-                // fetch("/picture")
-                //     .then(response => response.json())
-                //     .then((pixelData) => {
-                //         let imgData = new ImageData(new Uint8ClampedArray(pixelData), 640, 480);
-                //         context.putImageData(imgData, 0, 0);
-                //     });
-            }
-
-            function toggleDoor(doorId) {
-                fetch('/api/v1/doors/' + doorId, {
-                    method: 'POST',
-                    body: ''
-                }).catch();
-            }
+            // function toggleDoor(doorId) {
+            //     fetch('/api/v1/doors/' + doorId, {
+            //         method: 'POST',
+            //         body: ''
+            //     }).catch();
+            // }
         </script>
     </head>
-    <body onload="onload()">
-        <canvas id="picture"></canvas>
-        <br />
-        <span id="status">disconnected</span>
-        <button onclick="connect()">Connect</button>
+    <body>
+        <div id="app">
+            <div class="container">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-auto">
+                        <camera-stream id="picture"></camera-stream><br />
+                    </div>
+                </div>
+                <div class="row justify-content-md-center">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-2">
+                        <door-button door-id="1"></door-button>
+                    </div>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-2">
+                        <door-button door-id="2"></door-button>
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- <canvas id="picture"></canvas>
+            <br />
+            <span id="status">disconnected</span>
         <button onclick="disconnect()">Disconnect</button>
         <button onclick="start()">Stream</button>
         <button onclick="stop()">Stop</button>
         <button onclick="toggleDoor('1')">Door 1</button>
-        <button onclick="toggleDoor('2')">Door 2</button>
+        <button onclick="toggleDoor('2')">Door 2</button> -->
     </body>
 </html>

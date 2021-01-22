@@ -1,0 +1,17 @@
+{
+  "name": "garage-monitor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jasper Vander Velden <jasper.vv@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "camera-js": "git+ssh://git@github.com/jvandervelden/camera-js.git",
+    "express": "^4.17.1",
+    "express-ws": "^4.0.0",
+    "zeromq": "^4.2.2"
+  }
+}

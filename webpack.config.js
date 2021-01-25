@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   target: "node",
@@ -17,9 +17,12 @@ module.exports = {
     }
   },
 
-  plugins: [new webpack.ProgressPlugin(), new HtmlWebpackPlugin({
-            template: './src/static/index.html',
-            filename: 'static/index.html'
+  plugins: [new webpack.ProgressPlugin(),
+          new CopyPlugin({
+            patterns: [
+              { from: "src/static/main.css", to: "static/main.css" },
+              { from: "src/static/index.html", to: "static/index.html" }
+            ],
           })],
 
   module: {

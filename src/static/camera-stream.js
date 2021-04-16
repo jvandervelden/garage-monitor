@@ -61,7 +61,7 @@ function connect(imgCb) {
         return Promise.resolve();
     }
     return new Promise((resolve, reject) => {
-        socket = new WebSocket("ws://192.168.0.161:3000/api/v1/camera/stream");
+        socket = new WebSocket("ws://192.168.0.15:3000/api/v1/camera/stream");
  
         socket.onopen = function() {
             resolve();
